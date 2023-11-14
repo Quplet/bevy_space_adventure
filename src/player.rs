@@ -25,12 +25,12 @@ pub fn player_movement(time: Res<Time>, keyboard_input: Res<Input<KeyCode>>, mut
     }
 }
 
-pub fn player_setup(commands: &mut Commands, asset_server: &Res<AssetServer>) {
+pub fn player_setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let p1_ship_handle = asset_server.load("textures/ship.png");
     commands.spawn((
         SpriteBundle {
             texture: p1_ship_handle,
-            transform: Transform { scale: Vec3 { x: 0.25, y: 0.25, z: 1. }, translation: Vec3 { x: -400., y: 0., z: 5. }, ..default() },
+            transform: Transform { scale: Vec3 { x: 0.25, y: 0.25, z: 1. }, translation: Vec3 { x: -400., y: 0., z: 11. }, ..default() },
             ..default()
         },
         Player {number: 1, movement_speed: 400.},
