@@ -2,8 +2,8 @@ use bevy::prelude::*;
 
 #[derive(Component)]
 pub struct Player {
-    pub number: u8,
-    pub movement_speed: f32
+    number: u8,
+    movement_speed: f32
 }
 
 pub fn player_movement(time: Res<Time>, keyboard_input: Res<Input<KeyCode>>, mut players: Query<(&Player, &mut Transform)>) {
