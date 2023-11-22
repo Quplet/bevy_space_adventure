@@ -2,10 +2,19 @@ use bevy::prelude::*;
 
 use crate::player::*;
 use crate::star::*;
+use crate::asteroid::*;
 
 mod player;
 mod star;
-//struct Asteroid;
+mod asteroid;
+
+#[derive(Debug, Clone, Eq, PartialEq, Hash, States, Default)]
+enum GameState {
+    MainMenu,
+    #[default]
+    Game,
+    Paused
+}
 
 #[derive(Resource)]
 pub struct GameStats {
@@ -15,13 +24,11 @@ pub struct GameStats {
 
 impl Default for GameStats {
     fn default() -> Self {
-        GameStats { speed: 1., acceleration: 0.01 }
+        GameStats { speed: 1., acceleration: 0.02 }
     }
 }
 
 fn setup(mut commands: Commands) {
-    
-    //let asteroid_handle = asset_server.load("res/textures/asteroid.png");
     commands.spawn(Camera2dBundle::default());
 }
 
@@ -41,7 +48,10 @@ fn main() {
     }))
     .insert_resource(ClearColor(Color::rgb(0.0001, 0., 0.001)))
     .insert_resource(GameStats::default())
-    .add_systems(Startup, (setup, player_setup, stars_setup))
-    .add_systems(Update, (player_movement, star_movement, update_game_stats))
+    .add_state::<GameState>()
+    .add_systems(Startup, (setup, stars_setup))
+    .add_systems(OnEnter(GameState::Game), player_setup)
+    .add_systems(Update, (star_movement, asteroid_movement).run_if(not(in_state(GameState::Paused)))) 
+    .add_systems(Update, (player_movement, update_game_stats, generate_asteroids).run_if(in_state(GameState::Game)))
     .run();
 }
